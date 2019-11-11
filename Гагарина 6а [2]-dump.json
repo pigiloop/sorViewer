@@ -1,0 +1,155 @@
+{
+        "Cksum": {
+                "checksum": 28598,
+                "checksum_ours": 28598,
+                "match": true
+        },
+        "DataPts": {
+                "_datapts_params": {
+                        "offset": "STV",
+                        "xscaling": 1
+                },
+                "max before offset": 65.535,
+                "min before offset": 34.973,
+                "num data points": 2500,
+                "num data points 2": 2500,
+                "num traces": 1,
+                "scaling factor": 1.0
+        },
+        "FxdParams": {
+                "BC": "-82.00 dB",
+                "EOT thr": "10.000 dB",
+                "X1": 0,
+                "X2": 0,
+                "Y1": 65535,
+                "Y2": 65535,
+                "acquisition offset": 0,
+                "acquisition offset distance": 0,
+                "acquisition range distance": 5,
+                "averaging time": "10 sec",
+                "date/time": "Thu Aug 29 17:58:39 2019 (1567090719 sec)",
+                "front panel offset": 0,
+                "index": "1.460000",
+                "loss thr": "0.100 dB",
+                "noise floor level": 65535,
+                "noise floor scaling factor": 1000,
+                "num averages": 21504,
+                "num data points": 2500,
+                "number of pulse width entries": 1,
+                "power offset first point": 0,
+                "pulse width": "20 ns",
+                "range": 0.5133432499999999,
+                "refl thr": "-65.535 dB",
+                "resolution": 0.20533729999999997,
+                "sample spacing": "0.001 usec",
+                "trace type": "ST[standard trace]",
+                "unit": "km (kilometers)",
+                "wavelength": "1550.0 nm"
+        },
+        "GenParams": {
+                "build condition": "BC (as-built)",
+                "cable ID": "",
+                "cable code/fiber type": "",
+                "comments": "",
+                "fiber ID": "",
+                "fiber type": "G.652 (standard SMF)",
+                "language": "EN",
+                "location A": "",
+                "location B": "",
+                "operator": "",
+                "user offset": "0",
+                "user offset distance": "0",
+                "wavelength": "1550 nm"
+        },
+        "KeyEvents": {
+                "Summary": {
+                        "ORL": 40.803,
+                        "ORL finish": 0.169403,
+                        "ORL start": 0.169403,
+                        "loss end": 0.169403,
+                        "loss start": 0.169403,
+                        "total loss": 0.075
+                },
+                "event 1": {
+                        "comments": " ",
+                        "distance": "0.169",
+                        "end of curr": "0.180",
+                        "end of prev": "0.012",
+                        "peak": "0.171",
+                        "refl loss": "-41.250",
+                        "slope": "0.475",
+                        "splice loss": "0.000",
+                        "start of curr": "0.169",
+                        "start of next": "0.180",
+                        "type": "1F9999LS {auto} reflection"
+                },
+                "num events": 1
+        },
+        "SupParams": {
+                "OTDR": "AQ1000",
+                "OTDR S/N": "C3UC07069F",
+                "module": "MODEL_H00_0",
+                "module S/N": "",
+                "other": " ",
+                "software": "1.03",
+                "supplier": "YOKOGAWA TEST AND MEASUREMENT CORPORATION"
+        },
+        "blocks": {
+                "Cksum": {
+                        "name": "Cksum",
+                        "order": 6,
+                        "pos": 6006,
+                        "size": 8,
+                        "version": "2.00"
+                },
+                "DataPts": {
+                        "name": "DataPts",
+                        "order": 4,
+                        "pos": 417,
+                        "size": 5020,
+                        "version": "2.00"
+                },
+                "FxdParams": {
+                        "name": "FxdParams",
+                        "order": 2,
+                        "pos": 247,
+                        "size": 92,
+                        "version": "2.00"
+                },
+                "GenParams": {
+                        "name": "GenParams",
+                        "order": 0,
+                        "pos": 124,
+                        "size": 33,
+                        "version": "2.00"
+                },
+                "KeyEvents": {
+                        "name": "KeyEvents",
+                        "order": 3,
+                        "pos": 339,
+                        "size": 78,
+                        "version": "2.00"
+                },
+                "SupParams": {
+                        "name": "SupParams",
+                        "order": 1,
+                        "pos": 157,
+                        "size": 90,
+                        "version": "2.00"
+                },
+                "YokogawaSpecial": {
+                        "name": "YokogawaSpecial",
+                        "order": 5,
+                        "pos": 5437,
+                        "size": 569,
+                        "version": "2.00"
+                }
+        },
+        "filename": "\u0413\u0430\u0433\u0430\u0440\u0438\u043d\u0430 6\u0430 [2].SOR",
+        "format": 2,
+        "mapblock": {
+                "nblocks": 7,
+                "nbytes": 124
+        },
+        "version": "2.00"
+}

@@ -1,0 +1,77 @@
+#!/usr/bin/python
+from __future__ import absolute_import, print_function, unicode_literals
+import sys
+import os
+import logging
+
+if __name__ == '__main__':
+    cdir = os.path.dirname(os.path.realpath(__file__))
+    sys.path.insert(0, cdir + "/..")
+
+import pyOTDR
+
+logger = logging.getLogger('pyOTDR')
+logger.setLevel(logging.DEBUG)
+
+
+def ConvertSORtoTPL(filename=None):
+    return pyOTDR.sorparse(filename)
+
+
+# filename = None, opformat = "TPL"
+def main():
+    if len(sys.argv) < 2:
+        print("USAGE: %s SOR_file [format]" % sys.argv[0])
+        print("     : format: JSON (default) or XML")
+        sys.exit()
+
+    logging.basicConfig(format='%(message)s')
+    # logging.basicConfig()
+
+    filename = sys.argv[1]
+
+    with open("report.txt", "w") as f:
+        f.write(os.path.join(os.path.normpath("D:\Develop\PythonProjects\pyOTDR"), filename))
+
+
+    opformat = "JSON"
+    if len(sys.argv) >= 3:
+        if sys.argv[2] == "XML":
+            opformat = "XML"
+        elif sys.argv[2] == "TPL":
+            opformat = "TPL"
+    #        opformat = "XML" if sys.argv[2] == "XML" else "JSON"
+
+    status, results, tracedata = pyOTDR.sorparse(filename)
+
+    # construct data file name to dump results
+    fn_strip, ext = os.path.splitext(os.path.basename(filename))
+
+    if opformat == "TPL":
+        return "TPL", results, tracedata
+
+    if opformat == "JSON":
+        datafile = fn_strip + "-dump.json"
+    else:
+        datafile = fn_strip + "-dump.xml"
+
+    with open(datafile, "w") as output:
+        pyOTDR.tofile(results, output, format=opformat)
+
+    # construct data file name
+    fn_strip, ext = os.path.splitext(os.path.basename(filename))
+    opfile = fn_strip + "-trace.dat"
+
+    with open(opfile, "w") as output:
+        for xy in tracedata:
+            output.write(xy)
+
+    if results is None:
+        return "Error"
+
+    return status, None, None
+
+
+# ==============================================
+if __name__ == '__main__':
+    main()

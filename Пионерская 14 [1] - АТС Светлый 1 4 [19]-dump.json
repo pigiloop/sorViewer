@@ -1,0 +1,168 @@
+{
+        "Cksum": {
+                "checksum": 6550,
+                "checksum_ours": 6550,
+                "match": true
+        },
+        "DataPts": {
+                "_datapts_params": {
+                        "offset": "STV",
+                        "xscaling": 1
+                },
+                "max before offset": 65.535,
+                "min before offset": 34.357,
+                "num data points": 20000,
+                "num data points 2": 20000,
+                "num traces": 1,
+                "scaling factor": 1.0
+        },
+        "FxdParams": {
+                "BC": "-82.00 dB",
+                "EOT thr": "10.000 dB",
+                "X1": 0,
+                "X2": 0,
+                "Y1": 65535,
+                "Y2": 65535,
+                "acquisition offset": 0,
+                "acquisition offset distance": 0,
+                "acquisition range distance": 103,
+                "averaging time": "20 sec",
+                "date/time": "Thu Sep 05 20:23:56 2019 (1567704236 sec)",
+                "front panel offset": 0,
+                "index": "1.460000",
+                "loss thr": "0.100 dB",
+                "noise floor level": 65535,
+                "noise floor scaling factor": 1000,
+                "num averages": 14848,
+                "num data points": 20000,
+                "number of pulse width entries": 1,
+                "power offset first point": 0,
+                "pulse width": "30 ns",
+                "range": 10.266865,
+                "refl thr": "-65.535 dB",
+                "resolution": 0.5133432499999999,
+                "sample spacing": "0.0025 usec",
+                "trace type": "ST[standard trace]",
+                "unit": "km (kilometers)",
+                "wavelength": "1550.0 nm"
+        },
+        "GenParams": {
+                "build condition": "BC (as-built)",
+                "cable ID": "",
+                "cable code/fiber type": "",
+                "comments": "",
+                "fiber ID": "",
+                "fiber type": "G.652 (standard SMF)",
+                "language": "EN",
+                "location A": "",
+                "location B": "",
+                "operator": "",
+                "user offset": "0",
+                "user offset distance": "0",
+                "wavelength": "1550 nm"
+        },
+        "KeyEvents": {
+                "Summary": {
+                        "ORL": 37.707,
+                        "ORL finish": 3.333651,
+                        "ORL start": 1.441981,
+                        "loss end": 3.333651,
+                        "loss start": 1.441981,
+                        "total loss": 0.921
+                },
+                "event 1": {
+                        "comments": " ",
+                        "distance": "1.442",
+                        "end of curr": "1.499",
+                        "end of prev": "0.034",
+                        "peak": "1.442",
+                        "refl loss": "0.000",
+                        "slope": "0.182",
+                        "splice loss": "0.164",
+                        "start of curr": "1.442",
+                        "start of next": "3.334",
+                        "type": "0F9999LS {auto} loss/drop/gain"
+                },
+                "event 2": {
+                        "comments": " ",
+                        "distance": "3.334",
+                        "end of curr": "3.339",
+                        "end of prev": "1.499",
+                        "peak": "3.335",
+                        "refl loss": "-66.471",
+                        "slope": "0.265",
+                        "splice loss": "0.000",
+                        "start of curr": "3.334",
+                        "start of next": "3.339",
+                        "type": "1F9999LS {auto} reflection"
+                },
+                "num events": 2
+        },
+        "SupParams": {
+                "OTDR": "AQ1000",
+                "OTDR S/N": "C3UC07069F",
+                "module": "MODEL_H00_0",
+                "module S/N": "",
+                "other": " ",
+                "software": "1.03",
+                "supplier": "YOKOGAWA TEST AND MEASUREMENT CORPORATION"
+        },
+        "blocks": {
+                "Cksum": {
+                        "name": "Cksum",
+                        "order": 6,
+                        "pos": 41062,
+                        "size": 8,
+                        "version": "2.00"
+                },
+                "DataPts": {
+                        "name": "DataPts",
+                        "order": 4,
+                        "pos": 461,
+                        "size": 40020,
+                        "version": "2.00"
+                },
+                "FxdParams": {
+                        "name": "FxdParams",
+                        "order": 2,
+                        "pos": 247,
+                        "size": 92,
+                        "version": "2.00"
+                },
+                "GenParams": {
+                        "name": "GenParams",
+                        "order": 0,
+                        "pos": 124,
+                        "size": 33,
+                        "version": "2.00"
+                },
+                "KeyEvents": {
+                        "name": "KeyEvents",
+                        "order": 3,
+                        "pos": 339,
+                        "size": 122,
+                        "version": "2.00"
+                },
+                "SupParams": {
+                        "name": "SupParams",
+                        "order": 1,
+                        "pos": 157,
+                        "size": 90,
+                        "version": "2.00"
+                },
+                "YokogawaSpecial": {
+                        "name": "YokogawaSpecial",
+                        "order": 5,
+                        "pos": 40481,
+                        "size": 581,
+                        "version": "2.00"
+                }
+        },
+        "filename": "\u041f\u0438\u043e\u043d\u0435\u0440\u0441\u043a\u0430\u044f 14 [1] - \u0410\u0422\u0421 \u0421\u0432\u0435\u0442\u043b\u044b\u0439 1 4 [19].SOR",
+        "format": 2,
+        "mapblock": {
+                "nblocks": 7,
+                "nbytes": 124
+        },
+        "version": "2.00"
+}
