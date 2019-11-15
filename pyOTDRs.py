@@ -4,6 +4,7 @@ import sys
 import os
 import xlsxwriter
 import re
+from config import *
 
 import matplotlib.pyplot as plt
 import kvCreateXLSReport
@@ -14,9 +15,11 @@ def processReports(filenames):
 
 
 def convertPair(s):
-    x, y = re.split(r'\t', s.strip('\n'))
-    c = (float(x), float(y))
-    return c
+    return map(float, re.findall(r'(.*)\t(.*)\n', s)[0])
+# Первоначальный вариант функции преобразования координат из строк
+#    x, y = re.split(r'\t', s.strip('\n'))
+#    c = (float(x), float(y))
+#   return c
 
 
 def createXLSReports(filenames):

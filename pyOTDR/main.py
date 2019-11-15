@@ -30,10 +30,6 @@ def main():
 
     filename = sys.argv[1]
 
-    with open("report.txt", "w") as f:
-        f.write(os.path.join(os.path.normpath("D:\Develop\PythonProjects\pyOTDR"), filename))
-
-
     opformat = "JSON"
     if len(sys.argv) >= 3:
         if sys.argv[2] == "XML":
