@@ -16,10 +16,6 @@ def processReports(filenames):
 
 def convertPair(s):
     return map(float, re.findall(r'(.*)\t(.*)\n', s)[0])
-# Первоначальный вариант функции преобразования координат из строк
-#    x, y = re.split(r'\t', s.strip('\n'))
-#    c = (float(x), float(y))
-#   return c
 
 
 def createXLSReports(filenames):
@@ -67,9 +63,7 @@ def createXLSReports(filenames):
         status, results, tracedata = pyOTDR.ConvertSORtoTPL(filename)
 
         # Функцию доработать, так как не все файлы именуют с указанием с 2х сторон адресов
-        regexp = r'(.*)\[(.*)\].*[!-](.*)\[(.*)\](.*)'
-        addressPackage = re.findall(regexp, os.path.split(filename)[-1], re.IGNORECASE)[0][:-1]
-        Addr1, Port1, Addr2, Port2 = addressPackage
+        Addr1, Port1, Addr2, Port2 = parseFilenameSOR(filename)
 
         if str(results["FxdParams"]["unit"]) == "km (kilometers)":
             unit = "км"
@@ -85,7 +79,6 @@ def createXLSReports(filenames):
         # устанавливаем ширину колонок
         enum_widths = enumerate(width_columns)
         for col, width in enum_widths:
-            print(col, width)
             worksheet.set_column(col, col, width)
 
         # Заголовок отчёта
@@ -131,6 +124,22 @@ def createXLSReports(filenames):
         worksheet.write('A18', f'Затухание: \t{lenghtLoss:5.3f} дБ/{unit}', cellFormatMainText)
         worksheet.write('E17', f'Полные потери: \t{totalLoss} дБ', cellFormatMainText)
 
+        # Список событий в списке для графиков и таблицы
+        events = []
+        for numEvent in range(numEvents):
+            event = results["KeyEvents"][f'event {numEvent + 1}']
+            spliceLoss = "---" if float(event["splice loss"]) == 0.00 else event["splice loss"]
+            reflectLoss = "---" if event["refl loss"] == "0.000" else event["refl loss"]
+
+            if numEvent + 1 == numEvents:
+                typeEvent = "Конец"
+            elif float(event["splice loss"]) < 0:
+                typeEvent = "Положит. дефект"
+            else:
+                typeEvent = "Потери"
+
+            events.append((numEvent + 1, typeEvent, event["distance"], spliceLoss, reflectLoss, event["slope"]))
+
         # Тут будет график рисоваться
 #        path = os.path.normpath("D:\develop\python_projects\sorViewer\Гагарина 6а [2]-trace.dat")
 
@@ -144,8 +153,8 @@ def createXLSReports(filenames):
 
         plt.grid(True)
 
-        plt.plot([1.442, 1.442], [17, 15], label='1', color='red')
-        plt.plot([3.332, 3.332], [17, 15], label='2', color='red')
+#        plt.plot([1.442, 1.442], [17, 15], label='1', color='red')
+#        plt.plot([3.332, 3.332], [17, 15], label='2', color='red')
         plt.plot(xs, ys, linewidth=0.4, color='black')
 
         plt.title('Рефлектограмма OTDR')
@@ -154,17 +163,31 @@ def createXLSReports(filenames):
         plt.xlabel('Длина, км')
         plt.ylabel('дБ')
 
+        delta = float(len(xs)*0.025*(xs[1] - xs[0]))
 
         # Дописать функцию, в зависимости от событий должны чёрточки ставится.
-        plt.text(1.1, 14, '1')
-        plt.text(1.1, 14, '1')
-        plt.text(3.4, 14, '2')
-        plt.arrow(3.332, 17, -0.15, 0, color='red', linewidth=0.5, shape='full', head_width=0.4, head_length=0.1)
-        plt.arrow(3.332, 15, -0.15, 0, color='red', linewidth=0.5, shape='full', head_width=0.4, head_length=0.1)
+        for i, event in enumerate(events):
+            f = False
+            for n, x in enumerate(xs):
+                if float(event[2]) < x:
+                    f = True
+                    break
+            d = n-int(len(ys)*0.001)
+            if f:
+                level = ys[d]
+            else:
+                level = 0.0
+
+            plt.text(xs[d], level-1.5, event[0])
+            plt.plot([xs[d], xs[d]], [level+1, level-1], label='1', color='red')
+
+            if i < numEvents-1:
+                continue
+            plt.arrow(xs[d], level+1, -delta, 0, color='red', linewidth=0.5, shape='full', head_width=delta*0.8, head_length=delta*0.2)
+            plt.arrow(xs[d], level-1, -delta, 0, color='red', linewidth=0.5, shape='full', head_width=delta*0.8, head_length=delta*0.2)
 
         fname, = os.path.splitext(os.path.basename(filename))[:-1]
         pngname = os.path.join(os.path.dirname(filename), fname + '.png')
-
 
         plt.savefig(pngname, dpi=300)
 
@@ -172,41 +195,16 @@ def createXLSReports(filenames):
 
         worksheet.insert_image('A20', pngname, {'x_offset': 40, 'x_scale': 0.9, 'y_scale': 0.9})
 
-
-
-
-
         # Тут должна рисоваться таблица
         worksheet.write('C41', 'Таблица событий', cellFormatSubHeader)
 
         # Рисуем заголовок таблицы
-        list_header = ['№', 'Тип', 'Дистанция', 'Потери, дБ', 'Отражение, дБ', 'Затухание, дБ/км']
-        enum_header = enumerate(list_header)
-        for col_num, col_data in enum_header:
-            worksheet.write(START_EVENT_ROW-1, col_num, col_data, cellFormatTableHeader)
-
-        for numEvent in range(numEvents):
-            event = results["KeyEvents"][f'event {numEvent + 1}']
-            spliceLoss = "---" if float(event["splice loss"]) == 0.00 else event["splice loss"]
-            reflectLoss = "---" if event["refl loss"] == "0.000" else event["refl loss"]
-
-
-            if numEvent + 1 == numEvents:
-                typeEvent = "Конец"
-            elif float(event["splice loss"]) < 0:
-                typeEvent = "Положит. дефект"
-            else:
-                typeEvent = "Потери"
-
-            list_data = [numEvent + 1, typeEvent, event["distance"], spliceLoss, reflectLoss, event["slope"]]
-            enum_data = enumerate(list_data)
-
-            worksheet.write(START_EVENT_ROW + numEvent, 0, numEvent + 1, cellFormatTableDataCenter)
-            worksheet.write(START_EVENT_ROW + numEvent, 1, typeEvent, cellFormatTableDataLeft)
-            worksheet.write(START_EVENT_ROW + numEvent, 2, event["distance"], cellFormatTableDataRight)
-            worksheet.write(START_EVENT_ROW + numEvent, 3, spliceLoss, cellFormatTableDataRight)
-            worksheet.write(START_EVENT_ROW + numEvent, 4, reflectLoss, cellFormatTableDataRight)
-            worksheet.write(START_EVENT_ROW + numEvent, 5, event["slope"], cellFormatTableDataRight)
+        worksheet.write_row(START_EVENT_ROW-1, 0,
+                            ('№', 'Тип', 'Дистанция', 'Потери, дБ', 'Отражение, дБ', 'Затухание, дБ/км'),
+                            cellFormatTableHeader)
+        # Заполняем данные событий в таблицу
+        for n, curEvent in enumerate(events):
+            worksheet.write_row(START_EVENT_ROW + n, 0, curEvent, cell_format=cellFormatTableDataCenter)
 
         # Задаём область печати
         worksheet.print_area('A1:G57')
@@ -216,9 +214,14 @@ def createXLSReports(filenames):
     print('Книга закрылась, запись удалась')
 
 
+def parseFilenameSOR(filename):
+    regexp = r'(.*)\[(.*)\].*[!-](.*)\[(.*)\](.*)'
+    addressPackage = re.findall(regexp, os.path.split(filename)[-1], re.IGNORECASE)[0][:-1]
+    Addr1, Port1, Addr2, Port2 = addressPackage
+    return Addr1, Port1, Addr2, Port2
+
+
 if __name__ == '__main__':
     filenames = sys.argv[1:]
 
-    print(filenames)
-    print(filenames.sort())
     processReports(filenames)
