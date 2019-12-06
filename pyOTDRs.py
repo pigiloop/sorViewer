@@ -172,7 +172,7 @@ def createXLSReports(filenames):
                 if float(event[2]) < x:
                     f = True
                     break
-            d = n-int(len(ys)*0.001)
+            d = n-int(len(ys)*0.002)
             if f:
                 level = ys[d]
             else:
@@ -183,8 +183,8 @@ def createXLSReports(filenames):
 
             if i < numEvents-1:
                 continue
-            plt.arrow(xs[d], level+1, -delta, 0, color='red', linewidth=0.5, shape='full', head_width=delta*0.8, head_length=delta*0.2)
-            plt.arrow(xs[d], level-1, -delta, 0, color='red', linewidth=0.5, shape='full', head_width=delta*0.8, head_length=delta*0.2)
+            plt.arrow(xs[d], level+1, -delta, 0, color='red', linewidth=0.5, shape='full', head_width=0.4, head_length=delta*0.2)
+            plt.arrow(xs[d], level-1, -delta, 0, color='red', linewidth=0.5, shape='full', head_width=0.4, head_length=delta*0.2)
 
         fname, = os.path.splitext(os.path.basename(filename))[:-1]
         pngname = os.path.join(os.path.dirname(filename), fname + '.png')
