@@ -4,6 +4,7 @@ import sys
 import os
 import xlsxwriter
 import re
+import time
 from config import *
 
 import matplotlib.pyplot as plt
@@ -57,7 +58,7 @@ def createXLSReports(filenames):
 
     print('Перед прогоном файлов')
     c = 1
-    width_columns = [9.14, 15, 15, 15, 15, 18.29, 5.29]
+    width_columns = [9.14, 15, 18, 15, 15, 18.29, 5.29]
     enum_widths = enumerate(width_columns)
     for filename in filenames:
         status, results, tracedata = pyOTDR.ConvertSORtoTPL(filename)
@@ -89,12 +90,17 @@ def createXLSReports(filenames):
 
         # Параметры левая колонка
         worksheet.write('A5', f'Начало: {Addr1}', cellFormatMainText)
-        worksheet.write('A6', f'Кабель: тип кабеля', cellFormatMainText)
+        worksheet.write('A6', f'Кабель:', cellFormatMainText)
         worksheet.write('A7', f'Диапазон: {results["FxdParams"]["range"]:6.3f} {unit}', cellFormatMainText)
         worksheet.write('A8', f'Длина волны: {results["FxdParams"]["wavelength"]}', cellFormatMainText)
         worksheet.write('A9', f'Порог потерь: {(results["FxdParams"]["loss thr"]).replace("dB", "дБ")}',
                          cellFormatMainText)
-        worksheet.write('A10', 'Дата', cellFormatMainText)
+
+        regexptime = r'\w+ \((.*)\ sec\)'
+        inttime = int(re.findall(regexptime, results["FxdParams"]["date/time"], re.IGNORECASE)[0])
+        dt = time.strftime('%d.%m.%Y %H:%M:%S', time.localtime(inttime))
+
+        worksheet.write('A10', f'Дата : {dt}', cellFormatMainText)
         worksheet.write('A11', f'OTDR: {results["SupParams"]["OTDR"]} S/N: {results["SupParams"]["OTDR S/N"]}',
                          cellFormatMainText)
         worksheet.write('A12', f'Модуль: {results["SupParams"]["module"]} S/N: {results["SupParams"]["module S/N"]}',
