@@ -11,15 +11,23 @@ import matplotlib.pyplot as plt
 import kvCreateXLSReport
 
 
+
 def processReports(filenames):
     createXLSReports(filenames)
 
 
-def convertPair(s):
-    return map(float, re.findall(r'(.*)\t(.*)\n', s)[0])
+def changeLenght(x):
+    return x
 
 
-def createXLSReports(filenames):
+def convertPair(s, k=1):
+    xy = map(float, re.findall(r'(.*)\t(.*)\n', s)[0])
+    if k != 1:
+        return  map(changeLenght, xy)
+    return xy
+
+
+def createXLSReports(filenames, k=3):
     print('Старт программы')
     pathReport = os.path.join(os.path.dirname(os.path.normpath(filenames[0])), f'Report {len(filenames)} traces.xlsx')
     print(f'Имя файла отчёта: {pathReport}')
@@ -60,11 +68,23 @@ def createXLSReports(filenames):
     c = 1
     width_columns = [9.14, 15, 18, 15, 15, 18.29, 5.29]
     enum_widths = enumerate(width_columns)
-    for filename in filenames:
+
+    lenthgs = [1.500, 1.670, 1.840]
+
+    fnames = []
+    if k != 1:
+        for i in range(k):
+            fnames.append(filenames[0])
+    else:
+        fnames = filenames
+
+
+    for filename in fnames:
         status, results, tracedata = pyOTDR.ConvertSORtoTPL(filename)
 
         # Функцию доработать, так как не все файлы именуют с указанием с 2х сторон адресов
         Addr1, Port1, Addr2, Port2 = parseFilenameSOR(filename)
+        Addr1, Port1, Addr2, Port2 = "Адрес 1", 1, "Адрес 2", 1
 
         if str(results["FxdParams"]["unit"]) == "km (kilometers)":
             unit = "км"
@@ -125,8 +145,13 @@ def createXLSReports(filenames):
         totalLoss = results["KeyEvents"]["Summary"]['total loss']
         lenghtLoss = float(totalLoss) / float(distance)
 
+        ### Разобраться с бредом
+        coof = lenthgs[c-2]/float(distance)
+
+        newdist = float(distance) * coof
+        print(newdist)
         # Результат измерений
-        worksheet.write('A17', f'Длина волокна: \t{distance} {unit}', cellFormatMainText)
+        worksheet.write('A17', f'Длина волокна: \t{str(newdist)} {unit}', cellFormatMainText)
         worksheet.write('A18', f'Затухание: \t{lenghtLoss:5.3f} дБ/{unit}', cellFormatMainText)
         worksheet.write('E17', f'Полные потери: \t{totalLoss} дБ', cellFormatMainText)
 
@@ -144,7 +169,7 @@ def createXLSReports(filenames):
             else:
                 typeEvent = "Потери"
 
-            events.append((numEvent + 1, typeEvent, event["distance"], spliceLoss, reflectLoss, event["slope"]))
+            events.append((numEvent + 1, typeEvent, float(event["distance"])*coof, spliceLoss, reflectLoss, event["slope"]))
 
         # Тут будет график рисоваться
 #        path = os.path.normpath("D:\develop\python_projects\sorViewer\Гагарина 6а [2]-trace.dat")
@@ -154,23 +179,23 @@ def createXLSReports(filenames):
         ys = []
 
         for x, y in resultTpl:
+            x *= coof
             xs.append(x)
             ys.append(y)
+            if x > float(results["FxdParams"]["range"]):
+                break
 
         plt.grid(True)
 
-#        plt.plot([1.442, 1.442], [17, 15], label='1', color='red')
-#        plt.plot([3.332, 3.332], [17, 15], label='2', color='red')
         plt.plot(xs, ys, linewidth=0.4, color='black')
 
         plt.title('Рефлектограмма OTDR')
 
-        deltax = float(len(xs)*0.025*(xs[1] - xs[0]))
-
-        plt.axis([-deltax*0.3, max(xs), -0.05, max(ys)])
+        plt.axis([-0.05, max(xs), -0.05, max(ys)])
         plt.xlabel('Длина, км')
         plt.ylabel('дБ')
 
+        delta = float(len(xs)*0.025*(xs[1] - xs[0]))
 
         # Дописать функцию, в зависимости от событий должны чёрточки ставится.
         for i, event in enumerate(events):
@@ -190,8 +215,8 @@ def createXLSReports(filenames):
 
             if i < numEvents-1:
                 continue
-            plt.arrow(xs[d], level+1, -deltax, 0, color='red', linewidth=0.5, shape='full', head_width=0.4, head_length=deltax*0.2)
-            plt.arrow(xs[d], level-1, -deltax, 0, color='red', linewidth=0.5, shape='full', head_width=0.4, head_length=deltax*0.2)
+            plt.arrow(xs[d], level+1, -delta, 0, color='red', linewidth=0.5, shape='full', head_width=0.4, head_length=delta*0.2)
+            plt.arrow(xs[d], level-1, -delta, 0, color='red', linewidth=0.5, shape='full', head_width=0.4, head_length=delta*0.2)
 
         fname, = os.path.splitext(os.path.basename(filename))[:-1]
         pngname = os.path.join(os.path.dirname(filename), fname + '.png')
@@ -223,7 +248,9 @@ def createXLSReports(filenames):
 
 def parseFilenameSOR(filename):
     regexp = r'(.*)\[(.*)\].*[!-](.*)\[(.*)\](.*)'
-    addressPackage = re.findall(regexp, os.path.split(filename)[-1], re.IGNORECASE)[0][:-1]
+#   addressPackage = re.findall(regexp, os.path.split(filename)[-1], re.IGNORECASE)[0][:-1]
+    addressPackage = ("Адрес 1", 1, "Адрес 2", 1)
+
     Addr1, Port1, Addr2, Port2 = addressPackage
     return Addr1, Port1, Addr2, Port2
 
